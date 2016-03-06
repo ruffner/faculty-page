@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -41,15 +42,25 @@
       background-color: transparent;
       overflow: visible;
     }
-
+    
+    paper-tabs {
+			font-weight: bold;
+			font-size: 16px;
+		}
+		
+		paper-fab.low {
+			--paper-fab-background: #607D8B;
+				margin-top: 30px;
+		}
+    
     paper-icon-button {
       margin: 0 8px;
       --paper-icon-button-ink-color: white;
     }
 
     .bottom-text {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
+      -webkit-transform: translateZ(2);
+      transform: translateZ(2);
 
       font-size: 20px;
       padding-bottom: 10px;
@@ -78,23 +89,35 @@
     .spacer {
       @apply(--layout-flex);
     }
-
+    
+    .self-end {
+			/* This mixin (from iron-flex-layout) aligns the tabs to the
+			bottom of the toolbar. */
+			@apply(--layout-self-end);
+		}
+		
+		.adj-down: {
+			margin-top: 50px;
+		}
   </style>
 
     <paper-scroll-header-panel condenses keep-condensed-header header-height="256" condensed-header-height="140">
 
     <paper-toolbar>
-      <div class="spacer"></div>
-      <paper-icon-button icon="mail"></paper-icon-button>
       <div class="bottom indent bottom-text" self-end>
         <div class="main-title">Dr. Dan Ionel</div>
         <div class="subtitle">University of Kentucky</div>
       </div>
-      <paper-tabs selected="0">
+      <div class="bottom title"></div>
+			<paper-tabs selected="0" bottom self-end>
+				<paper-tab>ABOUT</paper-tab>
 				<paper-tab>RESEARCH</paper-tab>
 				<paper-tab>PAPERS</paper-tab>
 				<paper-tab>CONTACT</paper-tab>
 			</paper-tabs>
+			</div>
+			<div class="spacer"></div>
+			<paper-fab class="bottom small low" icon="mail"></paper-fab>
     </paper-toolbar>
 
 		<div id="content">
