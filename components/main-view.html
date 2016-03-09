@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="sample-content.html">
@@ -101,19 +102,26 @@
 		}
   </style>
 
+    <iron-ajax
+        auto
+        url="../config/main.json"
+        handle-as="json"
+        last-response="{{config}}">
+    </iron-ajax>
+
+
     <paper-scroll-header-panel condenses keep-condensed-header header-height="256" condensed-header-height="140">
 
     <paper-toolbar>
       <div class="bottom indent bottom-text" self-end>
-        <div class="main-title">Dr. Dan Ionel</div>
-        <div class="subtitle">University of Kentucky</div>
+        <div class="main-title">{{config.title}}</div>
+        <div class="subtitle">{{config.subtitle}}</div>
       </div>
       <div class="bottom title"></div>
-			<paper-tabs selected="0" bottom self-end>
-				<paper-tab>ABOUT</paper-tab>
-				<paper-tab>RESEARCH</paper-tab>
-				<paper-tab>PAPERS</paper-tab>
-				<paper-tab>CONTACT</paper-tab>
+			<paper-tabs selected="{{config.activeTab}}" bottom self-end>
+			  <template is="dom-repeat" items="{{config.tabs}}">
+			    <paper-tab>{{item.title}}</paper-tab>
+			  </template>
 			</paper-tabs>
 			</div>
 			<div class="spacer"></div>
@@ -131,7 +139,16 @@
   <script>
     Polymer({
       is: 'main-view',      
-      
+    properties: {
+    config: {
+    type: Object,
+    value: [],
+    notify: true
+    }
+    },
+    ready: function() {
+    console.log(this.config);
+    }
     });
   </script>
 </dom-module>

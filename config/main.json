@@ -1,0 +1,21 @@
+{
+	"title": "Dr. Dan Ionel",
+	"subtitle": "University of Kentucky",
+	"tabs": [{
+			"title": "ABOUT",
+			"page": ""
+		}, 
+		{
+			"title": "RESEARCH",
+			"page": ""
+		}, 
+		{
+			"title": "PAPERS",
+			"page": ""
+		},
+		{
+			"title": "CONTACT",
+			"page": ""
+		}],
+	"activeTab": 0
+}
