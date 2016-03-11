@@ -97,6 +97,8 @@
 			bottom of the toolbar. */
 			@apply(--layout-self-end);
 		}
+		
+		#editor {overflow:scroll; max-height:300px}
   </style>
 
     <iron-ajax
@@ -121,7 +123,10 @@
 			    <paper-tab>{{item.title}}</paper-tab>
 			  </template>
 			</paper-tabs>
-			<paper-icon-button id="emailButton" icon="mail" on-tap="{{sendMail}}"></paper-icon-button>
+			<template is="dom-if" if="{{onLocal}}" id="et">
+			  <paper-icon-button id="editButton" icon="create" on-tap="editPage"></paper-icon-button>
+			</template>
+			<paper-icon-button id="emailButton" icon="mail"></paper-icon-button>
     </paper-toolbar>
 
 		<div id="content">
@@ -156,18 +161,33 @@
           value: [],
           notify: true
         },
-        pages: Object
+        pages: Object,
+        onLocal: {
+          type: Boolean,
+          value: true
+        }
       },
       ready: function() {
         console.log(this.config);
         this.pages = this.$.pages;
+
       },
       pageSelected: function(e) {
         console.log(this.pages.indexOf(e.detail.item)); 
       },
       sendMail: function() {
         var addr = "mailto:" + this.config.email;
-        window.open(addr, 'Compose Mail')
+        window.open(addr, 'Compose Mail');
+      },
+      editPage: function() {
+        console.log("editPage");
+        
+        
+        
+        
+        this.push('config.tabs', {"title": "EDIT", "page": ""});
+        console.log(this.config.tabs);
+        console.log(location.hostname);
       }
     });
   </script>
