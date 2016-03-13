@@ -25,7 +25,6 @@
 
     <section>
       <paper-material elevation="1" class="content" id="content">
-
       </paper-material>
     </section>
 
@@ -35,28 +34,16 @@
   <script>
     Polymer({
       is: 'content-view',
-      listeners: {
-      },
       properties: {
         target: {
           type: String,
-          value: "",
-          notify: true,
-          observer: "updateTarget"
-        },
-        targetPath: {
-          type: String,
-          notify: true
+          reflectToAttribute: true
         },
         targetHtml: String
       },
       ready: function() {
-      },
-      updateTarget: function(e) {
         if(this.target.indexOf(".html") == -1) return;
-
-        this.targetPath =  "./pages/" + this.target;
-        this.$.content.innerHTML = '<template is="juicy-html" content="' + this.targetPath + '"></template>';
+        this.$.content.innerHTML = '<template is="juicy-html" id="juicy" content="' + this.target + '"></template>';
       }
     });
 
