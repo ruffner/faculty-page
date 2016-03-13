@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/font-roboto/roboto.html">
+<link rel="import" href="../bower_components/juicy-html/juicy-html.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="content-view">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+      }
+    </style>
+    <style is="custom-style">
+      .content {
+        margin-top: 20px;
+        margin-left: 50px;
+        margin-right: 50px;
+        padding: 0px 10px 16px 50px;
+        background: #fdfdfd;
+      }
+    </style>
+
+    <section>
+      <paper-material elevation="1" class="content" id="content">
+
+      </paper-material>
+    </section>
+
+
+
+  </template>
+  <script>
+    Polymer({
+      is: 'content-view',
+      listeners: {
+      },
+      properties: {
+        target: {
+          type: String,
+          value: "",
+          notify: true,
+          observer: "updateTarget"
+        },
+        targetPath: {
+          type: String,
+          notify: true
+        },
+        targetHtml: String
+      },
+      ready: function() {
+      },
+      updateTarget: function(e) {
+        if(this.target.indexOf(".html") == -1) return;
+
+        this.targetPath =  "./pages/" + this.target;
+        this.$.content.innerHTML = '<template is="juicy-html" content="' + this.targetPath + '"></template>';
+      }
+    });
+
+  </script>
+</dom-module>

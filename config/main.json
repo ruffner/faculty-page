@@ -4,19 +4,19 @@
 	"email": "dan.ionel@uky.edu",
 	"tabs": [{
 			"title": "ABOUT",
-			"page": ""
-		}, 
+			"page": "about.html"
+		},
 		{
 			"title": "RESEARCH",
-			"page": ""
-		}, 
+			"page": "research.html"
+		},
 		{
 			"title": "PAPERS",
-			"page": ""
+			"page": "papers.html"
 		},
 		{
 			"title": "CONTACT",
-			"page": ""
+			"page": "contact.html"
 		}],
-	"activeTab": 0
+	"startTab": 0
 }

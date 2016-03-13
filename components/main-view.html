@@ -1,3 +1,6 @@
+
+<!DOCTYPE html>
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/font-roboto/roboto.html">
 <link rel="import" href="../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
@@ -12,16 +15,18 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
+<link rel="import" href="edit-view.html">
+<link rel="import" href="content-view.html">
 
 <dom-module id="main-view">
   <template>
-    
+
     <style>
       :host {
         font-family: Roboto;
       }
     </style>
-    
+
     <style is="custom-style">
 
     paper-scroll-header-panel {
@@ -49,12 +54,12 @@
       background-color: transparent;
       overflow: visible;
     }
-    
+
     paper-tabs {
 			font-weight: bold;
 			font-size: 16px;
 		}
-		
+
     paper-icon-button {
       margin: 0 8px;
       --paper-icon-button-ink-color: white;
@@ -91,21 +96,21 @@
     .spacer {
       @apply(--layout-flex);
     }
-    
+
     .self-end {
 			/* This mixin (from iron-flex-layout) aligns the tabs to the
 			bottom of the toolbar. */
 			@apply(--layout-self-end);
 		}
-		
-		#editor {overflow:scroll; max-height:300px}
+
   </style>
 
     <iron-ajax
         auto
         url="../config/main.json"
         handle-as="json"
-        last-response="{{config}}">
+        last-response="{{config}}"
+        on-response="loadConfig">
     </iron-ajax>
 
 
@@ -118,9 +123,12 @@
       </div>
       <div class="bottom title"></div>
 			<div class="spacer"></div>
-			<paper-tabs class="bottom self-end" selected="{{config.activeTab}}" bottom self-end>
+			<paper-tabs class="bottom self-end" selected="{{activeTab}}" bottom self-end>
 			  <template is="dom-repeat" items="{{config.tabs}}">
 			    <paper-tab>{{item.title}}</paper-tab>
+			  </template>
+        <template is="dom-if" if="{{editing}}">
+			    <paper-tab>EDIT</paper-tab>
 			  </template>
 			</paper-tabs>
 			<template is="dom-if" if="{{onLocal}}" id="et">
@@ -130,29 +138,29 @@
     </paper-toolbar>
 
 		<div id="content">
-			<iron-pages id="pages" selected="{{config.activeTab}}">
-			  
-			  <template is="dom-repeat" items="{{config.tabs}}">
-			    <section>
-            <paper-material elevation="1" class="content">
-              <h2 class="page-title">{{item.title}}</h2>
-              <p>This is the contact section</p>
-            </paper-material>
-          </section>
+			<iron-pages id="pages" selected="{{activeTab}}">
+
+			  <template is="dom-repeat" items="{{config.tabs}}" id="cp-template">
+          <content-view target="{{item.page}}"></content-view>
 			  </template>
-			  
+
+        <template is="dom-if" if="{{onLocal}}">
+          <section>
+            <edit-view pages="{{config.tabs}}"></edit-view>
+          </section>
+        </template>
+
       </iron-pages>
 		</div>
-    
-    
+
+
   </paper-scroll-header-panel>
   </template>
 
   <script>
     Polymer({
-      is: 'main-view',  
+      is: 'main-view',
       listeners: {
-        'pages.iron-select': 'pageSelected',
         'emailButton.tap': 'sendMail'
       },
       properties: {
@@ -161,33 +169,30 @@
           value: [],
           notify: true
         },
+        activeTab: {
+          type: Number,
+          value: undefined
+        },
         pages: Object,
-        onLocal: {
-          type: Boolean,
-          value: true
-        }
+        onLocal: false,
+        editing: false
       },
       ready: function() {
-        console.log(this.config);
         this.pages = this.$.pages;
-
-      },
-      pageSelected: function(e) {
-        console.log(this.pages.indexOf(e.detail.item)); 
+        this.onLocal = (location.hostname == "localhost" || location.hostname == "127.0.0.1");
       },
       sendMail: function() {
         var addr = "mailto:" + this.config.email;
         window.open(addr, 'Compose Mail');
       },
       editPage: function() {
-        console.log("editPage");
-        
-        
-        
-        
-        this.push('config.tabs', {"title": "EDIT", "page": ""});
-        console.log(this.config.tabs);
-        console.log(location.hostname);
+        if(this.onLocal)
+          this.editing = !this.editing;
+        else
+          this.editing = false;
+      },
+      loadConfig: function(e) {
+        this.activeTab = this.config.startTab;
       }
     });
   </script>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/font-roboto/roboto.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+
+<!-- include libraries(jQuery, bootstrap) -->
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+<!-- include summernote css/js-->
+<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.css" rel="stylesheet">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.1/summernote.js"></script>
+
+<dom-module id="edit-view">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+      }
+
+
+    </style>
+    <style is="custom-style">
+      paper-dropdown-menu {
+        width: 200px;
+        color: white;
+
+
+      }
+
+      .content {
+        margin-top: 20px;
+        margin-left: 50px;
+        margin-right: 50px;
+      }
+
+      .spacer {
+        @apply(--layout-flex);
+      }
+
+      #editor {
+        overflow:scroll;
+        min-height:380px;
+      }
+    </style>
+
+    <paper-toolbar>
+      <div>
+        EDITOR
+      </div>
+
+      <div class="spacer"></div>
+
+      <paper-dropdown-menu label="Select Page" selectedItem="{{pageToEdit}}" no-animations>
+        <paper-listbox class="dropdown-content" id="pageSelect">
+          <template is="dom-repeat" items="{{pages}}">
+            <paper-item value="{{item.page}}">{{item.title}}</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <paper-icon-button id="emailButton" icon="save"></paper-icon-button>
+      <paper-icon-button id="emailButton" icon="cancel"></paper-icon-button>
+    </paper-toolbar>
+
+    <paper-material elevation="1" class="content">
+
+      <div id="summernote">Hello Summernote</div>
+
+
+    </paper-material>
+  </template>
+  <script>
+    Polymer({
+      is: 'edit-view',
+      listeners: {
+        'pageSelect.iron-select': 'updateTarget'
+      },
+      properties: {
+        target: {
+          type: String,
+          value: "",
+          notify: true
+        },
+        targetHtml: "String<h1>sring</h1>",
+        pages: {
+          type: Object,
+          notify: true
+        },
+        pageToEdit: Number
+      },
+      ready: function() {
+        $(document).ready(function() {
+          var toEdit = "<h1>WASSUP</h1>";
+          $('#summernote').summernote('code', toEdit);
+        });
+
+      },
+      updateTarget: function(e) {
+        console.log(this.$.pageSelect.selected );
+
+        var index = this.$.pageSelect.selected;
+
+        var f = "./pages/" + this.pages[index].page;
+
+        console.log(f);
+
+      }
+    });
+
+  </script>
+</dom-module>
