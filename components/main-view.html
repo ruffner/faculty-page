@@ -127,29 +127,25 @@
 			  <template is="dom-repeat" items="{{config.tabs}}">
 			    <paper-tab>{{item.title}}</paper-tab>
 			  </template>
-        <template is="dom-if" if="{{editing}}">
-			    <paper-tab>EDIT</paper-tab>
-			  </template>
 			</paper-tabs>
 			<template is="dom-if" if="{{onLocal}}" id="et">
-			  <paper-icon-button id="editButton" icon="create" on-tap="editPage"></paper-icon-button>
+			  <paper-icon-button id="editButton" toggles icon="create" on-tap="editPage"></paper-icon-button>
 			</template>
 			<paper-icon-button id="emailButton" icon="mail"></paper-icon-button>
     </paper-toolbar>
 
 		<div id="content">
-			<iron-pages id="pages" selected="{{activeTab}}">
+      <template is="dom-if" if="{{editing}}">
+          <edit-view page="{{activeUrl}}"></edit-view>
+      </template>
 
-			  <template is="dom-repeat" items="{{config.tabs}}" id="cp-template">
-          <content-view target="{{item.page}}"></content-view>
-			  </template>
 
-        <template is="dom-if" if="{{onLocal}}">
-          <section>
-            <edit-view pages="{{config.tabs}}"></edit-view>
-          </section>
+      <iron-pages id="pages" selected="{{activeTab}}">
+        <template is="dom-if" if$="{{!editing}}">
+  			  <template is="dom-repeat" items="{{config.tabs}}" id="cp-template">
+            <content-view target="{{item.page}}"></content-view>
+  			  </template>
         </template>
-
       </iron-pages>
 		</div>
 
@@ -171,11 +167,20 @@
         },
         activeTab: {
           type: Number,
-          value: undefined
+          value: undefined,
+          observer: 'onTabChange'
+        },
+        ativeUrl: {
+          type: String,
+          notify: true,
+          computed: 'getActiveUrl(config, activeTab)'
         },
         pages: Object,
         onLocal: false,
-        editing: false
+        editing: {
+          type: Boolean,
+          value: false
+        }
       },
       ready: function() {
         this.pages = this.$.pages;
@@ -193,6 +198,12 @@
       },
       loadConfig: function(e) {
         this.activeTab = this.config.startTab;
+      },
+      getActiveUrl: function(con, tab) {
+        return con.tabs[tab].page;
+      },
+      onTabChange: function() {
+        this.activeUrl = this.getActiveUrl(this.config, this.activeTab);
       }
     });
   </script>

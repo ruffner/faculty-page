@@ -31,20 +31,6 @@
 
     </style>
     <style is="custom-style">
-      paper-dropdown-menu {
-        width: 200px;
-        --paper-input-container-label: {
-          color: #EEE;
-        };
-        --paper-input-container-input: {
-          color: #FFF;
-        };
-      }
-
-      paper-icon-button.a {
-        color: white;
-      }
-
       .content {
         margin-top: 20px;
         margin-left: 50px;
@@ -63,7 +49,7 @@
 
     <iron-ajax
       id="ajax"
-      url="{{target}}"
+      url="{{page}}"
       handle-as="text"
       last-response="{{pageData}}"
       debounce-duration="300">
@@ -76,15 +62,7 @@
 
       <div class="spacer"></div>
 
-      <paper-dropdown-menu label="Select Page" selectedItem="{{pageToEdit}}" no-animations>
-        <paper-listbox class="dropdown-content" id="pageSelect">
-          <template is="dom-repeat" items="{{pages}}">
-            <paper-item value="{{item.page}}">{{item.title}}</paper-item>
-          </template>
-        </paper-listbox>
-      </paper-dropdown-menu>
-
-      <a href="{{saveData}}"><paper-icon-button id="saveButton" icon="save" class="a"></paper-icon-button></a>
+      <paper-icon-button id="saveButton" icon="save" class="a"></paper-icon-button>
     </paper-toolbar>
 
     <paper-material elevation="1" class="content">
@@ -98,51 +76,40 @@
     Polymer({
       is: 'edit-view',
       listeners: {
-        'pageSelect.iron-select': 'updateTarget'
+        'saveButton.tap': 'onPageSave'
       },
       properties: {
         ajax: Object,
-        target: {
-          type: String,
-          value: "",
-          notify: true
-        },
         pageData: {
           type: String,
           notify: true,
           observer: 'onPageDataChange'
         },
-        pages: {
-          type: Object,
-          notify: true
-        },
-        saveData: {
+        page: {
           type: String,
-          computed: 'computeSaveData(pageData)',
-          value: "#"
+          notify: true,
+          observer: 'updatePage'
         },
         pageToEdit: Number
       },
       ready: function() {
-        /*$(document).ready(function() {
-          var toEdit = "<h1>WASSUP</h1>";
-          $('#summernote').summernote('code', toEdit);
-        });*/
+        console.log(this.page);
         this.ajax = this.$.ajax;
+        this.updatePage();
       },
-      updateTarget: function(e) {
-        this.target = this.pages[this.$.pageSelect.selected].page;
+      updatePage: function(e) {
+        console.log("in updatePage");
 
-        console.log("target: ", this.target);
-
-        this.ajax.generateRequest();
+        if(this.ajax)
+          this.ajax.generateRequest();
       },
       onPageDataChange: function(e) {
         console.log("pageData: ", this.pageData);
         $('#summernote').summernote('code', this.pageData);
       },
-      computeSaveData: function(pd) {
-        return "";
+      onPageSave: function() {
+        console.log("onsave");
+        window.location.href = ("data:application/xml;charset=utf-8,<html>" + $('#summernote').summernote('code') + "</html>");
       }
 
     });
