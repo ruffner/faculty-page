@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -32,9 +33,16 @@
     <style is="custom-style">
       paper-dropdown-menu {
         width: 200px;
+        --paper-input-container-label: {
+          color: #EEE;
+        };
+        --paper-input-container-input: {
+          color: #FFF;
+        };
+      }
+
+      paper-icon-button.a {
         color: white;
-
-
       }
 
       .content {
@@ -53,8 +61,16 @@
       }
     </style>
 
+    <iron-ajax
+      id="ajax"
+      url="{{target}}"
+      handle-as="text"
+      last-response="{{pageData}}"
+      debounce-duration="300">
+    </iron-ajax>
+
     <paper-toolbar>
-      <div>
+      <div class="title">
         EDITOR
       </div>
 
@@ -68,13 +84,12 @@
         </paper-listbox>
       </paper-dropdown-menu>
 
-      <paper-icon-button id="emailButton" icon="save"></paper-icon-button>
-      <paper-icon-button id="emailButton" icon="cancel"></paper-icon-button>
+      <a href="{{saveData}}"><paper-icon-button id="saveButton" icon="save" class="a"></paper-icon-button></a>
     </paper-toolbar>
 
     <paper-material elevation="1" class="content">
 
-      <div id="summernote">Hello Summernote</div>
+      <div id="summernote"></div>
 
 
     </paper-material>
@@ -86,35 +101,50 @@
         'pageSelect.iron-select': 'updateTarget'
       },
       properties: {
+        ajax: Object,
         target: {
           type: String,
           value: "",
           notify: true
         },
-        targetHtml: "String<h1>sring</h1>",
+        pageData: {
+          type: String,
+          notify: true,
+          observer: 'onPageDataChange'
+        },
         pages: {
           type: Object,
           notify: true
         },
+        saveData: {
+          type: String,
+          computed: 'computeSaveData(pageData)',
+          value: "#"
+        },
         pageToEdit: Number
       },
       ready: function() {
-        $(document).ready(function() {
+        /*$(document).ready(function() {
           var toEdit = "<h1>WASSUP</h1>";
           $('#summernote').summernote('code', toEdit);
-        });
-
+        });*/
+        this.ajax = this.$.ajax;
       },
       updateTarget: function(e) {
-        console.log(this.$.pageSelect.selected );
+        this.target = this.pages[this.$.pageSelect.selected].page;
 
-        var index = this.$.pageSelect.selected;
+        console.log("target: ", this.target);
 
-        var f = "./pages/" + this.pages[index].page;
-
-        console.log(f);
-
+        this.ajax.generateRequest();
+      },
+      onPageDataChange: function(e) {
+        console.log("pageData: ", this.pageData);
+        $('#summernote').summernote('code', this.pageData);
+      },
+      computeSaveData: function(pd) {
+        return "";
       }
+
     });
 
   </script>
