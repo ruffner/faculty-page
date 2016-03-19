@@ -2,6 +2,12 @@
 	"title": "Dr. Dan Ionel",
 	"subtitle": "University of Kentucky",
 	"email": "dan.ionel@uky.edu",
+	"images": [
+	  "./images/olduk.jpg",
+	  "./images/mainbldg.jpg",
+	  "./images/memhall.jpg",
+	  "./images/willyt.jpg"
+	],
 	"tabs": [{
 			"title": "ABOUT",
 			"page": "./pages/about.html"
