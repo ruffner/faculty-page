@@ -13,9 +13,15 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/carbon-route/carbon-route.html">
+<link rel="import" href="../bower_components/carbon-route/carbon-location.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
 
-<link rel="import" href="edit-view.html">
+
+<link rel="import" href="../bower_components/juicy-html/juicy-html.html">
+
 <link rel="import" href="content-view.html">
 
 <dom-module id="main-view">
@@ -132,31 +138,29 @@
       </div>
       <div class="bottom title"></div>
 			<div class="spacer"></div>
-			<paper-tabs class="bottom self-end" selected="{{activeTab}}" bottom self-end>
+			<paper-tabs class="bottom self-end" selected="{{activeTab}}" attr-for-selected='key' bottom self-end>
 			  <template is="dom-repeat" items="{{config.tabs}}">
-			    <paper-tab>{{item.title}}</paper-tab>
+			    <paper-tab key="{{index}}">{{item.title}}</paper-tab>
 			  </template>
 			</paper-tabs>
-			<template is="dom-if" if="{{onLocal}}" id="et">
-			  <paper-icon-button id="editButton" toggles icon="create" on-tap="editPage"></paper-icon-button>
-			</template>
 			<paper-icon-button id="emailButton" icon="mail"></paper-icon-button>
     </paper-toolbar>
-
-		<div id="content">
-      <template is="dom-if" if="{{editing}}">
-          <edit-view page="{{activeUrl}}"></edit-view>
+	  
+    <neon-animated-pages selected='{{activeTab}}'
+                         attr-for-selected='key'
+                         entry-animation='slide-from-left-animation'
+                         exit-animation='slide-right-animation'>
+      
+      <template id="pageTemplate" is="dom-repeat" items="{{config.tabs}}">
+        <neon-animatable key="{{index}}">
+          <paper-material class="content">
+            <content-view target="{{item.page}}"></content-view>
+          </paper-material>
+        </neon-animatable>
+        
       </template>
 
-
-      <iron-pages id="pages" selected="{{activeTab}}">
-        <template is="dom-if" if$="{{!editing}}">
-  			  <template is="dom-repeat" items="{{config.tabs}}" id="cp-template">
-            <content-view target="{{item.page}}"></content-view>
-  			  </template>
-        </template>
-      </iron-pages>
-		</div>
+    </neon-animated-pages>
 
 
   </paper-scroll-header-panel>
@@ -171,64 +175,33 @@
       properties: {
         config: {
           type: Object,
-          value: [],
           notify: true
         },
         activeTab: {
           type: Number,
-          value: undefined,
-          observer: 'onTabChange'
-        },
-        ativeUrl: {
-          type: String,
-          notify: true,
-          computed: 'getActiveUrl(config, activeTab)'
-        },
-        pages: Object,
-        onLocal: false,
-        editing: {
-          type: Boolean,
-          value: false
-        },
-        images: Array,
-        activeImage: {
-          type: Number,
-          value: 0
-        },
-        bgRotationHandle: Object
+          value: 0,
+          notify: true
+        }
       },
       ready: function() {
-        this.pages = this.$.pages;
-        this.onLocal = (location.hostname == "localhost" || location.hostname == "127.0.0.1");
+        this.activeTab = 0;
       },
       sendMail: function() {
         var addr = "mailto:" + this.config.email;
         window.open(addr, 'Compose Mail');
       },
-      editPage: function() {
-        if(this.onLocal)
-          this.editing = !this.editing;
-        else
-          this.editing = false;
-      },
       loadConfig: function(e) {
+        
         this.activeTab = this.config.startTab;
-        this.images = this.config.images;
-        this.cycleBackground();
+        console.log("activeTab", this.activeTab, this.config.tabs);
+        
       },
       getActiveUrl: function(con, tab) {
         return con.tabs[tab].page;
       },
       onTabChange: function() {
-        this.activeUrl = this.getActiveUrl(this.config, this.activeTab);
-      },
-      cycleBackground: function () {
-        if(this.images) {
-          this.activeImage = (this.activeImage+1) % this.images.length;
-          this.customStyle['--background-url'] = 'url("' + this.images[this.activeImage] + '")';
-          this.updateStyles();
-          this.bgRotationHandle = this.async(this.cycleBackground, 8000);
-        }
+        console.log("tab", this.activeTab);
+
       }
     });
   </script>

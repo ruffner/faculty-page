@@ -8,27 +8,9 @@
 
 <dom-module id="content-view">
   <template>
-    <style>
-      :host {
-        width: 100%;
-      }
-    </style>
-    <style is="custom-style">
-      .content {
-        margin-top: 20px;
-        margin-left: 50px;
-        margin-right: 50px;
-        padding: 20px 10px 16px 50px;
-        background: #fdfdfd;
-      }
-    </style>
-
-    <section>
-      <paper-material elevation="1" class="content" id="content">
-      </paper-material>
+    
+    <section id="content">
     </section>
-
-
 
   </template>
   <script>
@@ -37,13 +19,33 @@
       properties: {
         target: {
           type: String,
-          reflectToAttribute: true
-        },
-        targetHtml: String
+          notify: true,
+          observer: 'targetChanged'
+        }
       },
       ready: function() {
         if(this.target.indexOf(".html") == -1) return;
-        this.$.content.innerHTML = '<template is="juicy-html" id="juicy" content="' + this.target + '"></template>';
+        
+        
+      },
+      targetChanged: function(e) {
+        this.importHref(this.target, function(e) {
+            console.log("load success", e.target.import);
+            
+            console.log("content: ", e.target.import.body);
+            //this.$.content.innerHTML = '';
+            this.$.content.appendChild(e.target.import.body);
+            
+            //this.$.content.addEventListener('click', this.linkHandler);
+
+            // e.target.import is the import document.
+        }, function(e) {
+            console.log("loading error");
+        });
+      },
+      linkHandler: function(e) {
+        e.preventDefault();
+        
       }
     });
 

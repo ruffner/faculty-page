@@ -36,6 +36,8 @@
     "paper-item": "PolymerElements/paper-item#^1.1.4",
     "paper-listbox": "PolymerElements/paper-listbox#^1.1.2",
     "bootstrap-wysiwyg": "mindmup/bootstrap-wysiwyg",
-    "summernote": "^0.8.1"
+    "summernote": "^0.8.1",
+    "carbon-route": "PolymerElements/carbon-route#^0.8.4",
+    "neon-animation": "PolymerElements/neon-animation#^1.2.0"
   }
 }

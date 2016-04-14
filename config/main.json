@@ -8,17 +8,18 @@
 	  "./images/memhall.jpg",
 	  "./images/willyt.jpg"
 	],
+	"cycle": false,
 	"tabs": [{
 			"title": "ABOUT",
-			"page": "./pages/about.html"
+			"page": "./pages/hydro.html"
 		},
 		{
 			"title": "RESEARCH",
-			"page": "./pages/research.html"
+			"page": "./pages/summary3.html"
 		},
 		{
 			"title": "PAPERS",
-			"page": "./pages/papers.html"
+			"page": "./pages/venezuela.html"
 		},
 		{
 			"title": "CONTACT",
